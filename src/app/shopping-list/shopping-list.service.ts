@@ -1,14 +1,22 @@
 import {Ingredient} from '../shared/ingredient.model';
 import {Subject} from 'rxjs/Subject';
-import {ParentExtentService} from './parent-extent.service';
+import {ImmutableService} from '../services/immutable-service';
+import {HttpCollectionStorage} from '../services/storage/http-collection-storage';
+import {Injectable} from '@angular/core';
 
-export class ShoppingListService {
+@Injectable()
+export class ShoppingListService extends ImmutableService<Ingredient> {
   ingredientsChanged = new Subject<Ingredient[]>();
   startedEditing = new Subject<number>();
   private ingredients: Ingredient[] = [
     new Ingredient('Apples', 5),
     new Ingredient('Tomatoes', 10),
   ];
+
+  constructor(private storageProvider: HttpCollectionStorage) {
+    super();
+    this.storage = storageProvider.getInstance('foobar');
+  }
 
   getIngredients() {
     return [...this.ingredients];
@@ -19,6 +27,8 @@ export class ShoppingListService {
   }
 
   addIngredient(ingredient: Ingredient) {
+    console.log('addIn', this.storage);
+    debugger;
     this.ingredients.push(ingredient);
     this.ingredientsChanged.next([...this.ingredients]);
   }

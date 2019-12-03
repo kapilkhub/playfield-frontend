@@ -4,9 +4,11 @@ import { Subject } from 'rxjs/Subject';
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
+import {ImmutableService} from '../services/immutable-service';
+import {HttpCollectionStorage} from '../services/storage/http-collection-storage';
 
 @Injectable()
-export class RecipeService {
+export class RecipeService extends ImmutableService<Recipe> {
   recipesChanged = new Subject<Recipe[]>();
 
   private recipes: Recipe[] = [
@@ -27,7 +29,10 @@ export class RecipeService {
       ])
   ];
 
-  constructor(private slService: ShoppingListService) {}
+  constructor(private slService: ShoppingListService, private storageProvider: HttpCollectionStorage) {
+    super();
+    this.storage = storageProvider.getInstance('blablub');
+  }
 
   getRecipes() {
     return this.recipes.slice();
@@ -42,6 +47,8 @@ export class RecipeService {
   }
 
   addRecipe(recipe: Recipe) {
+    console.log('addR', this.storage);
+    debugger;
     this.recipes.push(recipe);
     this.recipesChanged.next(this.recipes.slice());
   }
