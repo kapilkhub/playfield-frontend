@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12" style="font-weight: 600; margin-top: 30px;">
+      Teachers
+    </div>
+    <div class="col-12 mt-2" *ngFor="let teacher of teachers">
+      <app-teacher-student-display
+        [person]="teacher">
+      </app-teacher-student-display>
+    </div>
+    <div class="col-12" style="font-weight: 600; margin-top: 30px;">
+      Students
+    </div>
+    <div class="col-12 mt-2" *ngFor="let student of students">
+      <app-teacher-student-display
+        [person]="student">
+      </app-teacher-student-display>
+    </div>
+  </div>
+</div>
