@@ -19,9 +19,9 @@ import {RecipeEditComponent} from './recipes/recipe-edit/recipe-edit.component';
 import {RecipeService} from './recipes/recipe.service';
 import { OnChangesComponent } from './learnings/on-changes/on-changes.component';
 import { TeacherStudentTypescriptComponent } from './learnings/teacher-student-typescript/teacher-student-typescript.component';
-import { TeacherStudentDisplayComponent } from './learnings/teacher-student-typescript/components/teacher-student-display/teacher-student-display.component';
 import { AdvancedTypescriptComponent } from './learnings/advanced-typescript/advanced-typescript.component';
 import {UrlTestComponent} from './learnings/advanced-typescript/models/url-builder';
+import {TeacherStudentDisplayComponent} from './learnings/teacher-student-typescript/components/teacher-student-display/teacher-student-display.component';
 
 @NgModule({
   declarations: [
