@@ -66,6 +66,10 @@ export class UrlTestComponent implements OnInit {
               private datasourceService: DatasourceService) {
   }
 
+  ngOnInit(): void {
+
+  }
+
   getDashoards() {
 
   }
