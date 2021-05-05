@@ -10,6 +10,9 @@ import {Component, Injectable, OnInit} from '@angular/core';
 // https://y42.com/datasource/api/datasources
 // https://y42.com/datasource/api/datasources/{id}
 
+// https://y42.com/datasource/api/datasources/{id}/tables
+// https://y42.com/datasource/api/datasources/{id}/tables/{id}
+
 
 @Injectable({
   providedIn: 'root'
