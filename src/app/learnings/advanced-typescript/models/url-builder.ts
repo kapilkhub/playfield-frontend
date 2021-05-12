@@ -1,17 +1,18 @@
 import {Component, Injectable, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
-// https://y42.com/dashboard/api/company/{id}/dashboards
-// https://y42.com/dashboard/api/company/{id}/dashboards/{id}
+// https://y42.com/dashboard/api/dashboards
+// https://y42.com/dashboard/api/dashboards/{id: string}
 
-// https://y42.com/dashboard/api/company/{id}/dashboards/{id}/widgets
-// https://y42.com/dashboard/api/company/{id}/dashboards/{id}/widgets/{id}
+// https://y42.com/dashboard/api/dashboards/{id: string}/widgets
+// https://y42.com/dashboard/api/dashboards/{id: string}/widgets/{id: string}
 
 
 // https://y42.com/datasource/api/datasources
-// https://y42.com/datasource/api/datasources/{id}
+// https://y42.com/datasource/api/datasources/{id: number}
 
-// https://y42.com/datasource/api/datasources/{id}/tables
-// https://y42.com/datasource/api/datasources/{id}/tables/{id}
+// https://y42.com/datasource/api/datasources/{id: number}/tables
+// https://y42.com/datasource/api/datasources/{id: number}/tables/{id: number}
 
 
 @Injectable({
@@ -19,16 +20,21 @@ import {Component, Injectable, OnInit} from '@angular/core';
 })
 export class BaseService {
 
-  constructor() {
 
+  constructor(private http: HttpClient) {
+
+  }
+
+  get finalUrl() {
+    return '';
   }
 
   getAllEntries() {
-
+    return this.http.get(this.finalUrl);
   }
 
-  getEntryById() {
-
+  getEntryById(id) {
+    return this.http.get(this.finalUrl + '/' + id);
   }
 
 }
@@ -37,6 +43,9 @@ export class BaseService {
   providedIn: 'root'
 })
 export class DashboardService extends BaseService {
+  constructor(http: HttpClient) {
+    super(http);
+  }
 
 }
 
@@ -44,15 +53,27 @@ export class DashboardService extends BaseService {
   providedIn: 'root'
 })
 export class DashboardWidgetService extends BaseService {
-
+  constructor(http: HttpClient) {
+    super(http);
+  }
 }
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatasourceService extends BaseService {
+  constructor(http: HttpClient) {
+    super(http);
+  }
+}
 
+@Injectable({
+  providedIn: 'root'
+})
+export class DatasourceTableService extends BaseService {
+  constructor(http: HttpClient) {
+    super(http);
+  }
 }
 
 
@@ -66,22 +87,43 @@ export class UrlTestComponent implements OnInit {
 
   constructor(private dashboardService: DashboardService,
               private dashboardWidgetService: DashboardWidgetService,
-              private datasourceService: DatasourceService) {
+              private datasourceService: DatasourceService,
+              private datasourceTableService: DatasourceTableService) {
   }
 
   ngOnInit(): void {
 
   }
 
-  getDashoards() {
+  getAllDashoards() {
 
   }
 
-  getDashoardWidgets() {
+  getDashboardById() {
 
   }
 
-  getDatasources() {
+  getAllDashoardWidgets() {
+
+  }
+
+  getDashoardWidgetById() {
+
+  }
+
+  getAllDatasources() {
+
+  }
+
+  getDatasourcesById() {
+
+  }
+
+  getAllDatasourceTables() {
+
+  }
+
+  getDatasourceTableById() {
 
   }
 
