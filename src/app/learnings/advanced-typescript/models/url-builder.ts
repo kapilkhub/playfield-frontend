@@ -25,7 +25,7 @@ export class BaseService {
 
   }
 
-  get finalUrl() {
+  get finalUrl(): string {
     return '';
   }
 
@@ -94,18 +94,18 @@ export class UrlTestComponent implements OnInit {
   }
 
   getAllDashoards() {
-
+    this.dashboardService.getAllEntries().subscribe();
   }
 
-  getDashboardById(id: unknown) {
-
+  getDashboardById(id: any) { // please fix any
+    this.dashboardService.getEntryById(id).subscribe();
   }
 
   getAllDashoardWidgets() {
 
   }
 
-  getDashoardWidgetById(id: unknown) {
+  getDashoardWidgetById(id: any) { // please fix any
 
   }
 
@@ -113,7 +113,7 @@ export class UrlTestComponent implements OnInit {
 
   }
 
-  getDatasourcesById(id: unknown) {
+  getDatasourcesById(id: any) { // please fix any
 
   }
 
@@ -121,7 +121,7 @@ export class UrlTestComponent implements OnInit {
 
   }
 
-  getDatasourceTableById(id: unknown) {
+  getDatasourceTableById(id: any) { // please fix any
 
   }
 
