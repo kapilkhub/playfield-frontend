@@ -79,9 +79,7 @@ export class DatasourceTableService extends BaseService {
 
 @Component({
   selector: 'app-url-text',
-  template: `
-    <div></div>
-  `
+  template: ``
 })
 export class UrlTestComponent implements OnInit {
 
@@ -99,7 +97,7 @@ export class UrlTestComponent implements OnInit {
 
   }
 
-  getDashboardById() {
+  getDashboardById(id: unknown) {
 
   }
 
@@ -107,7 +105,7 @@ export class UrlTestComponent implements OnInit {
 
   }
 
-  getDashoardWidgetById() {
+  getDashoardWidgetById(id: unknown) {
 
   }
 
@@ -115,7 +113,7 @@ export class UrlTestComponent implements OnInit {
 
   }
 
-  getDatasourcesById() {
+  getDatasourcesById(id: unknown) {
 
   }
 
@@ -123,7 +121,7 @@ export class UrlTestComponent implements OnInit {
 
   }
 
-  getDatasourceTableById() {
+  getDatasourceTableById(id: unknown) {
 
   }
 
