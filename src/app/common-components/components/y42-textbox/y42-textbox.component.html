@@ -1,0 +1,5 @@
+<div [formGroup]="group">
+    <input [type]="type" [ngClass]="{'form-control':true}" [placeholder]="placeholder"
+        [formControlName]="controlName" />
+    <small class="text-muted text-danger">{{errorMessage}}</small>
+</div>

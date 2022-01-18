@@ -1,5 +1,7 @@
-import {Component, Injectable, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subscription, throwError } from 'rxjs';
+import { catchError, publish, refCount } from 'rxjs/operators';
 
 // https://y42.com/dashboard/api/dashboards
 // https://y42.com/dashboard/api/dashboards/{id: string}
@@ -29,13 +31,30 @@ export class BaseService {
     return '';
   }
 
-  getAllEntries() {
-    return this.http.get(this.finalUrl);
+  getAllEntries<T>() {  /* T Extends SomeType can apply constarint on T if I can view the output */
+    return this.http.get<T>(this.finalUrl).pipe(
+      catchError(this.handleError),
+    );
   }
 
-  getEntryById(id) {
-    return this.http.get(this.finalUrl + '/' + id);
+
+  getEntryById<T>(id: string | number) {   /* T Extends SomeType can apply constarint on T if I can view the output */
+    let queryParam: string;
+    if (typeof id == "number") {
+      queryParam = id.toString();
+    }
+    else {
+      queryParam = id;
+    }
+    return this.http.get<T>(this.finalUrl + '/' + id).pipe(
+      catchError(this.handleError),
+    );
   }
+
+  private handleError(error: any): Observable<never> {
+    return throwError(error); // handle error here properly, we can show the popup or toast.
+  }
+
 
 }
 
@@ -47,6 +66,18 @@ export class DashboardService extends BaseService {
     super(http);
   }
 
+  get finalUrl(): string {
+    return "https://y42.com/dashboard/api/dashboards";
+  }
+
+  getAllEntries<T>(): Observable<T> {
+    return super.getAllEntries<T>();
+  }
+
+  getEntryById<T>(id: string | number): Observable<T> {
+    return super.getEntryById<T>(id);
+  }
+
 }
 
 @Injectable({
@@ -56,6 +87,28 @@ export class DashboardWidgetService extends BaseService {
   constructor(http: HttpClient) {
     super(http);
   }
+
+  private _finalUrl: string;
+  get finalUrl() {
+    return this._finalUrl;
+  }
+
+
+  set finalUrl(id: string) {
+    this._finalUrl = `https://y42.com/dashboard/api/dashboards/${id}/widgets`
+  }
+
+
+  getWidgetById<T>(id: string): Observable<T> {
+    this.finalUrl = id;
+    return super.getAllEntries();
+  }
+
+  getEntryById<T>(id: string | number): Observable<T> {
+    this.finalUrl = "some-dashboard-id";  //again not sure from where I will get the dashboard id, therefore hardcoading
+    return super.getEntryById(id)
+  }
+
 }
 
 @Injectable({
@@ -65,6 +118,20 @@ export class DatasourceService extends BaseService {
   constructor(http: HttpClient) {
     super(http);
   }
+
+  get finalUrl(): string {
+    return "https://y42.com/datasource/api/datasources";
+  }
+
+  getAllEntries<T>(): Observable<T> {
+    return super.getAllEntries<T>();
+  }
+
+  getEntryById<T>(id: string | number): Observable<T> {
+    return super.getEntryById<T>(id);
+  }
+
+
 }
 
 @Injectable({
@@ -74,6 +141,32 @@ export class DatasourceTableService extends BaseService {
   constructor(http: HttpClient) {
     super(http);
   }
+
+  private _finalUrl: string;
+  get finalUrl() {
+    return this._finalUrl;
+  }
+
+
+  set finalUrl(id: string) {
+    this._finalUrl = `https://y42.com/datasource/api/datasources/${id}/tables`
+  }
+
+
+  getDatasourceByTableId<T>(id: number): Observable<T> {
+    if (!id) {
+      throw new Error("Id required");
+    }
+    this.finalUrl = id.toString();
+    return super.getAllEntries();
+  }
+
+  getEntryById<T>(id: string | number): Observable<T> {
+    this.finalUrl = "some-table-id";  //again not sure from where I will get the table id, therefore hardcoading
+    return super.getEntryById(id)
+  }
+
+
 }
 
 
@@ -81,12 +174,19 @@ export class DatasourceTableService extends BaseService {
   selector: 'app-url-text',
   template: ``
 })
-export class UrlTestComponent implements OnInit {
+export class UrlTestComponent implements OnInit, OnDestroy {
 
   constructor(private dashboardService: DashboardService,
-              private dashboardWidgetService: DashboardWidgetService,
-              private datasourceService: DatasourceService,
-              private datasourceTableService: DatasourceTableService) {
+    private dashboardWidgetService: DashboardWidgetService,
+    private datasourceService: DatasourceService,
+    private datasourceTableService: DatasourceTableService) {
+  }
+  subscription: Subscription = new Subscription();
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe(); //needed since change detection strategy is Default
+    }
   }
 
   ngOnInit(): void {
@@ -94,35 +194,55 @@ export class UrlTestComponent implements OnInit {
   }
 
   getAllDashoards() {
-    this.dashboardService.getAllEntries().subscribe();
+    this.subscription.add(this.dashboardService.getAllEntries().pipe(
+    ).subscribe())
+
   }
 
   getDashboardById(id: any) { // please fix any
-    this.dashboardService.getEntryById(id).subscribe();
+    this.subscription.add(this.dashboardService.getEntryById(id).pipe(
+      publish(),
+      refCount()
+    ).subscribe())
   }
 
   getAllDashoardWidgets() {
+    /*not sure how will i get dashboard Id for the widget. may be from the input but given method 
+     definition does not suggest that there is any widget input. 
+     So I believe, I need to use map to get all widgets of all dashboard. 
+     may be something like this 
+      return this.getAllDashoards().pipe(
+       mergeMap( (dashboard: any) => this.dashboardWidgetService.getWidgetById(dashboard.id)));
+    */
+
+    /* this code is written, asuming we are getting id anyway .. somehow in the code*/
+    this.subscription.add(this.dashboardWidgetService.getWidgetById("some-id-from-ui").subscribe());
 
   }
 
-  getDashoardWidgetById(id: any) { // please fix any
-
+  getDashoardWidgetById(id: string) { // please fix any
+    this.subscription.add(this.dashboardWidgetService.getEntryById(id).subscribe())
   }
 
   getAllDatasources() {
+    this.subscription.add( this.datasourceService.getAllEntries().subscribe());
 
   }
 
-  getDatasourcesById(id: any) { // please fix any
-
+  getDatasourcesById(id: number) { // please fix any
+    this.subscription.add(this.datasourceService.getEntryById(id).subscribe());
   }
 
   getAllDatasourceTables() {
-
+    /**here also same as widgets. therefore hardocoding the widgetId. I do not like that I had to create a new method. 
+      may be a little more clarity help  
+      */
+      this.subscription.add(this.datasourceTableService.getDatasourceByTableId(123).subscribe());
   }
 
-  getDatasourceTableById(id: any) { // please fix any
+  getDatasourceTableById(id: number) { // please fix any
 
+    this.subscription.add( this.datasourceTableService.getEntryById(id).subscribe());
   }
 
 }

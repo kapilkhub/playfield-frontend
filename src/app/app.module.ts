@@ -22,6 +22,8 @@ import { TeacherStudentTypescriptComponent } from './learnings/teacher-student-t
 import { AdvancedTypescriptComponent } from './learnings/advanced-typescript/advanced-typescript.component';
 import {UrlTestComponent} from './learnings/advanced-typescript/models/url-builder';
 import {TeacherStudentDisplayComponent} from './learnings/teacher-student-typescript/components/teacher-student-display/teacher-student-display.component';
+import { CommonComponentsModule } from './common-components/common-components.module';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import {TeacherStudentDisplayComponent} from './learnings/teacher-student-typesc
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CommonComponentsModule,
+    HttpClientModule
   ],
   providers: [ShoppingListService, RecipeService],
   bootstrap: [AppComponent]
