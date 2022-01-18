@@ -208,14 +208,16 @@ export class UrlTestComponent implements OnInit, OnDestroy {
 
   getAllDashoardWidgets() {
     /*not sure how will i get dashboard Id for the widget. may be from the input but given method 
-     definition does not suggest that there is any widget input. 
+     definition and base class method definition does not suggest that there is any widget input. 
      So I believe, I need to use map to get all widgets of all dashboard. 
      may be something like this 
       return this.getAllDashoards().pipe(
        mergeMap( (dashboard: any) => this.dashboardWidgetService.getWidgetById(dashboard.id)));
     */
 
-    /* this code is written, asuming we are getting id anyway .. somehow in the code*/
+    /* this code is written, asuming we are getting id anyway .. somehow in the code  didnot like that I have to write new method
+    but new method is anyway using base class implementation.
+    */
     this.subscription.add(this.dashboardWidgetService.getWidgetById("some-id-from-ui").subscribe());
 
   }
